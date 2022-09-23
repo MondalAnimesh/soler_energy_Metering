@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:provider/provider.dart';
+import 'package:solar_energy/module/provider/app_state.dart';
+import 'package:solar_energy/ui/pages/home/user.dart';
 
 import '../../widgets/background.dart';
 import 'registration.dart';
@@ -10,10 +14,11 @@ class LoginScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
 
-    return Scaffold(
-      body: Background(
-        child: SingleChildScrollView(keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-          
+    return Scaffold(body: Consumer<Appstate>(builder: (context, value, child) {
+      return Background(
+        child: SingleChildScrollView(
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+
           // mainAxisAlignment: MainAxisAlignment.center,
           child: Column(
             children: [
@@ -33,16 +38,18 @@ class LoginScreen extends StatelessWidget {
               Container(
                 alignment: Alignment.center,
                 margin: const EdgeInsets.symmetric(horizontal: 40),
-                child: const TextField(
-                  decoration: InputDecoration(labelText: "Phone Number"),
+                child: TextField(
+                  controller: value.user.phoneNumber,
+                  decoration: const InputDecoration(labelText: "Phone Number"),
                 ),
               ),
               SizedBox(height: size.height * 0.03),
               Container(
                 alignment: Alignment.center,
                 margin: const EdgeInsets.symmetric(horizontal: 40),
-                child: const TextField(
-                  decoration: InputDecoration(labelText: "Password"),
+                child: TextField(
+                  controller: value.user.password,
+                  decoration: const InputDecoration(labelText: "Password"),
                   obscureText: true,
                 ),
               ),
@@ -57,7 +64,17 @@ class LoginScreen extends StatelessWidget {
               ),
               SizedBox(height: size.height * 0.05),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () async {
+                  EasyLoading.show(status: "Please wait");
+                  bool isLogin = await value.user.login();
+                  if (isLogin) {
+                    EasyLoading.showSuccess("Login successful");
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(builder: (context) => const Home()),
+                        (route) => false);
+                  }
+                },
                 // padding: const EdgeInsets.all(0),
                 child: Container(
                   alignment: Alignment.center,
@@ -94,7 +111,7 @@ class LoginScreen extends StatelessWidget {
             ],
           ),
         ),
-      ),
-    );
+      );
+    }));
   }
 }

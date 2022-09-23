@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:syncfusion_flutter_charts/sparkcharts.dart';
 
-class User extends StatefulWidget {
-  const User({super.key});
+class Home extends StatefulWidget {
+  const Home({super.key});
 
   @override
-  State<User> createState() => _UserState();
+  State<Home> createState() => _HomeState();
 }
 
-class _UserState extends State<User> {
+class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,12 +30,12 @@ class _UserState extends State<User> {
           ),
         ],
       ),
-      backgroundColor: const Color.fromARGB(255, 241, 235, 235),
+      backgroundColor: Colors.black.withOpacity(0.05),
       body: ListView(
         padding: const EdgeInsets.all(15),
         children: [
           const Text(
-            "Walcome",
+            "Welcome",
             style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
           ),
           const Text(
