@@ -13,7 +13,7 @@ class Userdata {
   TextEditingController password;
   TextEditingController plantDetails;
   final storage = const FlutterSecureStorage();
-  Userdata(
+  Userdata( 
       {required this.userName,
       required this.address,
       required this.phoneNumber,
@@ -49,10 +49,10 @@ class Userdata {
       // we have to show erroe to user
       return;
     }
-    userName = x.data["name"];
-    address = x.data["address"];
-    phoneNumber = x.data["phoneNumber"];
-    plantDetails = x.data["plantDetails"];
+    userName.text = x.data["name"];
+    address.text = x.data["address"];
+    phoneNumber.text = x.data["phoneNumber"];
+    plantDetails.text = x.data["plantDetails"];
     return;
   }
 
@@ -91,6 +91,11 @@ class Userdata {
       return false; //not able to login
     }
     await storage.write(key: "token", value: z.data['token']);
+    return true;
+  }
+
+  Future<bool> logout() async {
+    await storage.deleteAll();
     return true;
   }
 }

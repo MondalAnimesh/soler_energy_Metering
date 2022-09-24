@@ -13,7 +13,6 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-
     return Scaffold(body: Consumer<Appstate>(builder: (context, value, child) {
       return Background(
         child: SingleChildScrollView(

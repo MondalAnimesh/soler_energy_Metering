@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:solar_energy/module/mqtt/mqtt.dart';
 import 'package:solar_energy/module/provider/app_state.dart';
-import 'package:solar_energy/ui/pages/auth/login.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 void main() {
@@ -10,7 +10,6 @@ void main() {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-  
 
   // This widget is the root of your application.
   @override
@@ -25,8 +24,18 @@ class MyApp extends StatelessWidget {
             scaffoldBackgroundColor: Colors.white,
             visualDensity: VisualDensity.adaptivePlatformDensity,
           ),
-          
-          home: const LoginScreen(),
+          home: const Mqtt(),
+          // FutureBuilder(
+          //     future: isUserLoggedIn(),
+          //     builder: (context, snapshot) {
+          //       if (snapshot.hasData) {
+          //         if (snapshot.data == true) {
+          //           return const Home();
+          //         }
+          //         return const LoginScreen();
+          //       }
+          //       return const CircularProgressIndicator();
+          //     }),
           builder: EasyLoading.init(),
         ));
   }

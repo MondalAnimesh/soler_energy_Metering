@@ -8,5 +8,14 @@ class Appstate extends ChangeNotifier {
       password: TextEditingController(),
       plantDetails: TextEditingController(),
       address: TextEditingController());
-      
+
+  // Devices device = Devices(
+  //   deviceid:
+
+  // );
+
+  updateUserData() {
+    user.fetchdata();
+    notifyListeners();
+  }
 }
