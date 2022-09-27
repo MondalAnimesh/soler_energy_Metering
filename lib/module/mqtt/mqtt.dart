@@ -1,141 +1,105 @@
 import 'package:flutter/material.dart';
 
-import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:mqtt_client/mqtt_client.dart';
-import 'package:mqtt_client/mqtt_server_client.dart';
 import 'package:provider/provider.dart';
 import 'package:solar_energy/module/provider/app_state.dart';
 
-class Mqtt extends StatefulWidget {
-  const Mqtt({super.key});
+class DevicePage extends StatefulWidget {
+  const DevicePage({super.key});
 
   @override
-  State<Mqtt> createState() => _MqttState();
+  State<DevicePage> createState() => _DevicePageState();
 }
 
-class _MqttState extends State<Mqtt> {
-  Future<MqttServerClient> connect() async {
-    MqttServerClient client =
-        MqttServerClient.withPort('192.168.10.99', 'flutter_client', 1883);
-    client.logging(on: true);
-    client.onConnected = onConnected;
-    client.onDisconnected = onDisconnected;
-    client.onUnsubscribed = onUnsubscribed;
-    client.onSubscribed = onSubscribed;
-    client.onSubscribeFail = onSubscribeFail;
-    client.pongCallback = pong;
-
-    final connMessage = MqttConnectMessage()
-        .authenticateAs('Premchand', 'prem')
-        .withWillTopic('/test')
-        .withWillMessage('Will message')
-        .startClean()
-        .withWillQos(MqttQos.atLeastOnce);
-    client.connectionMessage = connMessage;
-    try {
-      await client.connect();
-    } catch (e) {
-      debugPrint('Exception: $e');
-      client.disconnect();
-    }
-    client.updates!.listen((List<MqttReceivedMessage<MqttMessage?>>? c) {
-      final recMess = c![0].payload as MqttPublishMessage;
-      final pt =
-          MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
-      lastmsg = pt;
-      setState(() {});
-      debugPrint(
-          'EXAMPLE::Change notification:: topic is <${c[0].topic}>, payload is <-- $pt -->');
-      debugPrint('');
-    });
-    return client;
-  }
-
-// connection succeeded
-  void onConnected() {
-    EasyLoading.showInfo('Connected');
-  }
-
-// unconnected
-  void onDisconnected() {
-    EasyLoading.showError('Disconnected');
-  }
-
-// subscribe to topic succeeded
-  void onSubscribed(String topic) {
-    EasyLoading.showInfo('Subscribed topic: $topic');
-  }
-
-// subscribe to topic failed
-  void onSubscribeFail(String topic) {
-    EasyLoading.showError('Failed to subscribe $topic');
-  }
-
-// unsubscribe succeeded
-  void onUnsubscribed(String? topic) {
-    EasyLoading.showInfo('Unsubscribed topic: $topic');
-  }
-
-// PING response received
-  void pong() {
-    EasyLoading.showError('Ping response client callback invoked');
-  }
-
-  MqttServerClient? client;
-  TextEditingController txt = TextEditingController();
-  String lastmsg = "No data available";
+class _DevicePageState extends State<DevicePage> {
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    conn();
-  }
-
-  conn() async {
-    client = await connect();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: Consumer<Appstate>(builder: (context, value, child) {
-      return ListView(padding: const EdgeInsets.all(20), children: [
-        Card(
-          elevation: 2,
-          child: Container(
-            height: 100,
-            width: 100,
-            color: Colors.white,
-            child: const Text(
-              "hello",
-              style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
-            ),
-          ),
-        ),
-        Card(
-          elevation: 2,
-          child: Container(
-            height: 100,
-            width: 100,
-            color: Colors.white,
-          ),
-        ),
-        Card(
-          elevation: 2,
-          child: Container(
-            height: 100,
-            width: 100,
-            color: Colors.white,
-          ),
-        ),
-        Card(
-          elevation: 2,
-          child: Container(
-            height: 100,
-            width: 100,
-            color: Colors.white,
-          ),
-        )
-      ]);
-    }));
+    return Consumer<Appstate>(builder: (context, value, child) {
+      return Scaffold(
+          appBar: AppBar(
+              elevation: 0,
+              backgroundColor: Colors.transparent,
+              title: const Text(
+                "Dashboard",
+                style: TextStyle(color: Colors.black),
+              ),
+              actions: [
+                IconButton(
+                    onPressed: value.connectMqtt,
+                    icon: const Icon(
+                      Icons.connect_without_contact,
+                      color: Colors.black,
+                    )),
+                PopupMenuButton(
+                  offset: const Offset(0.0, 60.0),
+                  icon: const Icon(Icons.account_circle_sharp,
+                      color: Colors.black),
+                  itemBuilder: (BuildContext context) =>
+                      <PopupMenuItem<String>>[
+                    PopupMenuItem<String>(
+                      onTap: value.updateDevices,
+                      child: const Center(child: Text("Refresh")),
+                    ),
+                  ],
+                ),
+              ]),
+          body: ListView(padding: const EdgeInsets.all(20), children: [
+            for (var i in value.devices.devices)
+              Card(
+                elevation: 2,
+                child: Container(
+                  height: 100,
+                  width: 100,
+                  color: Colors.white,
+                  child: Column(
+                    children: [
+                      Text(
+                        i.id.toString(),
+                        style: const TextStyle(
+                            fontSize: 32, fontWeight: FontWeight.bold),
+                      ),
+                      Row(
+                        children: [
+                          Text(
+                            i.current ?? "--",
+                            style: const TextStyle(
+                                fontSize: 32, fontWeight: FontWeight.bold),
+                          ),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          Text(
+                            i.volt ?? "--",
+                            style: const TextStyle(
+                                fontSize: 32, fontWeight: FontWeight.bold),
+                          ),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          Text(
+                            i.power ?? "--",
+                            style: const TextStyle(
+                                fontSize: 32, fontWeight: FontWeight.bold),
+                          ),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          Text(
+                            i.energy ?? "--",
+                            style: const TextStyle(
+                                fontSize: 32, fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
+                ),
+              )
+          ]));
+    });
   }
 }

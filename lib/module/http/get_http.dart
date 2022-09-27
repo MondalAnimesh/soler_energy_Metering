@@ -11,6 +11,7 @@ Future<HttpResponse> getrequest(String url, {istokenrequired = true}) async {
   var headers = {'Content-Type': 'application/json'};
   if (istokenrequired) {
     String? token = await storage.read(key: "token");
+    debugPrint(token);
     if (token == null) {
       return HttpResponse(data: "Please login again", status: false);
     }

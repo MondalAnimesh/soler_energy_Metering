@@ -1,16 +1,29 @@
+import 'package:flutter/cupertino.dart';
 import 'package:solar_energy/module/constants/apis.dart';
 import 'package:solar_energy/module/data/http_response.dart';
 import 'package:solar_energy/module/http/get_http.dart';
 
-class Devices {
-  String? deviceID;
+class Device {
+  String id;
+  String? power;
+  String? energy;
+  String? volt;
+  String? current;
+  Device({required this.id, this.current, this.energy, this.power, this.volt});
+}
 
+class Devices {
+  List<Device> devices = [];
+  Devices();
   fetchid() async {
-    HttpResponse id = await getrequest(Apis().api + Routes().adddevice);
-    if (id.status == false) {
+    HttpResponse response = await getrequest(Apis().api + Routes().getdevice);
+    debugPrint("${response.data}");
+    if (response.status == false) {
       return;
     }
-    deviceID = id.data["deviceID"];
+    for (var x in response.data["devices"]) {
+      devices.add(Device(id: "${x['deviceID']}"));
+    }
     return;
   }
 }

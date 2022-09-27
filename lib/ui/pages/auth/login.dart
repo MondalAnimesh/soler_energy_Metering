@@ -63,9 +63,9 @@ class LoginScreen extends StatelessWidget {
               ),
               SizedBox(height: size.height * 0.05),
               ElevatedButton(
-                onPressed: () async {
+                onPressed: () {
                   EasyLoading.show(status: "Please wait");
-                  bool isLogin = await value.user.login();
+                  bool isLogin = value.user.login();
                   if (isLogin) {
                     EasyLoading.showSuccess("Login successful");
                     Navigator.pushAndRemoveUntil(

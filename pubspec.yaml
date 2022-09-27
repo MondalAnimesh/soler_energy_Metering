@@ -43,6 +43,8 @@ dependencies:
   http: ^0.13.5
   flutter_secure_storage: ^6.0.0
   flutter_easyloading: ^3.0.5
+  flutter_neumorphic: ^3.2.0
+  fl_chart: ^0.55.2
 
 dev_dependencies:
   flutter_test:

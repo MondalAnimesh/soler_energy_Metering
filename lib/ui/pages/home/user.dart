@@ -1,12 +1,12 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:solar_energy/main.dart';
+import 'package:solar_energy/module/mqtt/mqtt.dart';
 import 'package:solar_energy/module/provider/app_state.dart';
 import 'package:syncfusion_flutter_charts/sparkcharts.dart';
-
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -59,10 +59,18 @@ class _HomeState extends State<Home> {
           body: ListView(
             padding: const EdgeInsets.all(15),
             children: [
-              const Text(
+              NeumorphicText(
                 "Welcome",
-                style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
+                style: const NeumorphicStyle(
+                  depth: 8, //customize depth here
+                  color: Colors.grey, //customize color here
+                ),
+                textStyle: NeumorphicTextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 32,
+                ),
               ),
+
               Text(
                 value.user.userName.text,
                 style:
@@ -84,48 +92,79 @@ class _HomeState extends State<Home> {
               //     "Plant details ",
               //   ),
               // ),
+
+              Neumorphic(
+                style: NeumorphicStyle(
+                    shape: NeumorphicShape.concave,
+                    boxShape:
+                        NeumorphicBoxShape.roundRect(BorderRadius.circular(12)),
+                    depth: 8,
+                    lightSource: LightSource.topLeft,
+                    color: Colors.white),
+                child: Column(
+                  children: [
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    const Text(
+                      "Total Energy Generated",
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(
+                      height: 30,
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const DevicePage()));
+                      },
+                      child: const Text(
+                        "Solar energy",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          // color: Color.fromARGB(255, 209, 173, 42)),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
               Card(
                 margin: const EdgeInsets.all(15),
                 elevation: 3,
-                child: Wrap(
-                  alignment: WrapAlignment.spaceAround,
-                  children: [
-                    Column(
-                      children: const [
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Text(
-                          "energy generated",
-                          style: TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.bold),
-                        ),
-                        SizedBox(
-                          height: 30,
-                        ),
-                        Text("Solar energy",
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              // color: Color.fromARGB(255, 209, 173, 42)),
-                            )),
-                      ],
-                    ),
-                    CircularPercentIndicator(
-                      radius: 60.0,
-                      lineWidth: 13.0,
-                      animation: true,
-                      animateFromLastPercent: true,
-                      percent: 0.4,
-                      center: const Text(
-                        "40.0%",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 20.0),
-                      ),
-                      circularStrokeCap: CircularStrokeCap.round,
-                      progressColor: Colors.blue,
-                    ),
-                  ],
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Wrap(
+                    alignment: WrapAlignment.spaceAround,
+                    children: [
+                      Neumorphic(
+                          style: NeumorphicStyle(
+                              shape: NeumorphicShape.concave,
+                              boxShape: NeumorphicBoxShape.roundRect(
+                                  BorderRadius.circular(12)),
+                              depth: 8,
+                              lightSource: LightSource.topLeft,
+                              color: Colors.grey),
+                          child: CircularPercentIndicator(
+                            radius: 60.0,
+                            lineWidth: 13.0,
+                            animation: true,
+                            animateFromLastPercent: true,
+                            percent: 0.4,
+                            center: const Text(
+                              "40.0%",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 20.0),
+                            ),
+                            circularStrokeCap: CircularStrokeCap.round,
+                            progressColor: Colors.blue,
+                          )),
+                    ],
+                  ),
                 ),
               ),
               Card(
@@ -236,27 +275,23 @@ class _HomeState extends State<Home> {
               //     ],
               //   ),
               // ),
-              Card(
-                margin: const EdgeInsetsDirectional.only(start: 15, end: 15),
-                elevation: 3,
-                child: Center(
-                    child: SfSparkBarChart(
-                  //Enable the trackball
-                  trackball: const SparkChartTrackball(
-                      activationMode: SparkChartActivationMode.tap),
+              Center(
+                  child: SfSparkBarChart(
+                //Enable the trackball
+                trackball: const SparkChartTrackball(
+                    activationMode: SparkChartActivationMode.tap),
 
-                  labelDisplayMode: SparkChartLabelDisplayMode.all,
-                  data: const <double>[
-                    1,
-                    5,
-                    0,
-                    1,
-                    7,
-                    13,
-                    7,
-                  ],
-                )),
-              )
+                labelDisplayMode: SparkChartLabelDisplayMode.all,
+                data: const <double>[
+                  1,
+                  5,
+                  0,
+                  1,
+                  7,
+                  13,
+                  7,
+                ],
+              ))
             ],
           ));
     });
